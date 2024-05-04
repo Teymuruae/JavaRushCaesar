@@ -1,13 +1,20 @@
 package app;
 
+import app.actions.Action;
+import app.actions.ActionsFactory;
+import app.helpers.DialogHelper;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Scanner;
 
 public class Interface {
 
+    public static final String INPUT_QUESTION = "Please enter the path to the file: ";
     private Scanner scanner = new Scanner(System.in);
     private Acts acts = new Acts();
+
+    private DialogHelper helper = new DialogHelper();
 
     private int readInt() {
         String value = new Scanner(System.in).nextLine();
@@ -31,27 +38,20 @@ public class Interface {
 
         option = scanner.nextInt();
 
-        switch (option) {
-            case 0 -> System.out.println("Good bye!!!");
-            case 1 -> encrypt();
-            case 2 -> decrypt();
-            case 3 -> bruteForce();
-            default -> System.out.println("wrong option number. Try again");
-        }
+        Action action = new ActionsFactory().getAction(option);
+        action.run();
     }
 
     private void encrypt() {
         String pathTo = "";
-        System.out.println("Enter a file path with text that needs to be encrypted: ");
-        String pathFrom = readString();
+          String pathFrom = helper.getLine("Enter a file path with text that needs to be encrypted: ");
         pathFrom = getNewPathIfNotValid(pathFrom);
         if (pathFrom.equals("0")) {
             System.out.println("Good bye!!!");
             return;
         }
-        System.out.println("Enter a key: ");
-        int key = readInt();
-        System.out.println("Enter a file path for encrypted text: ");
+        int key = helper.getInt("Enter a key: ");
+        System.out.println(INPUT_QUESTION);
         pathTo = readString();
         acts.encodeToFile(Path.of(pathFrom), Path.of(pathTo), key);
         System.out.println("Success");
