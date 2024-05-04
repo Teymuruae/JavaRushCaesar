@@ -6,18 +6,19 @@ import java.util.Scanner;
 
 public class Interface {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private Scanner scanner = new Scanner(System.in);
+    private Acts acts = new Acts();
 
-    private static int readInt() {
+    private int readInt() {
         String value = new Scanner(System.in).nextLine();
         return Integer.valueOf(value);
     }
 
-    private static String readString() {
+    private String readString() {
         return new Scanner(System.in).nextLine();
     }
 
-    public static void appStarter() {
+    public void appStart() {
         int option;
 
         String optionText = "Options:\n " +
@@ -31,29 +32,19 @@ public class Interface {
         option = scanner.nextInt();
 
         switch (option) {
-            case 0:
-                System.out.println("Good bye!!!");
-                return;
-            case 1:
-                encrypt();
-                break;
-            case 2:
-                decrypt();
-                break;
-            case 3:
-                bruteForce();
-                break;
-            default:
-                System.out.println("wrong option number. Try again");
+            case 0 -> System.out.println("Good bye!!!");
+            case 1 -> encrypt();
+            case 2 -> decrypt();
+            case 3 -> bruteForce();
+            default -> System.out.println("wrong option number. Try again");
         }
-
     }
 
-    private static void encrypt() {
+    private void encrypt() {
         String pathTo = "";
         System.out.println("Enter a file path with text that needs to be encrypted: ");
         String pathFrom = readString();
-        pathFrom = newPathIfNotValid(pathFrom);
+        pathFrom = getNewPathIfNotValid(pathFrom);
         if (pathFrom.equals("0")) {
             System.out.println("Good bye!!!");
             return;
@@ -62,15 +53,15 @@ public class Interface {
         int key = readInt();
         System.out.println("Enter a file path for encrypted text: ");
         pathTo = readString();
-        Acts.encodeToFile(Path.of(pathFrom), Path.of(pathTo), key);
+        acts.encodeToFile(Path.of(pathFrom), Path.of(pathTo), key);
         System.out.println("Success");
         System.out.println("Check encrypted text at file " + pathTo);
     }
 
-    private static void decrypt() {
+    private void decrypt() {
         System.out.println("Enter a file path with encrypted text");
         String pathFrom = readString();
-        pathFrom = newPathIfNotValid(pathFrom);
+        pathFrom = getNewPathIfNotValid(pathFrom);
         if (pathFrom.equals("0")) {
             System.out.println("Good bye!!!");
             return;
@@ -79,27 +70,27 @@ public class Interface {
         String pathTo = readString();
         System.out.println("Enter a key");
         int key = readInt();
-        Acts.decodeFromFile(Path.of(pathFrom), Path.of(pathTo), key);
+        acts.decodeFromFile(Path.of(pathFrom), Path.of(pathTo), key);
         System.out.println("Success");
         System.out.println("Check decrypted text at file " + pathTo);
     }
 
-    private static void bruteForce() {
+    private void bruteForce() {
         System.out.println("Enter a file path with encrypted text");
         String pathFrom = readString();
-        pathFrom = newPathIfNotValid(pathFrom);
+        pathFrom = getNewPathIfNotValid(pathFrom);
         if (pathFrom.equals("0")) {
             System.out.println("Good bye!!!");
             return;
         }
         System.out.println("Enter a file path for decrypted text");
         String pathTo = readString();
-        Acts.bruteForce(Path.of(pathFrom), Path.of(pathTo));
+        acts.bruteForce(Path.of(pathFrom), Path.of(pathTo));
         System.out.println("Success");
         System.out.println("Check decrypted text at file " + pathTo);
     }
 
-    private static String newPathIfNotValid(String pathName) {
+    private String getNewPathIfNotValid(String pathName) {
         while (Files.notExists(Path.of(pathName))) {
             System.out.println("Wrong file path. Please, enter valid path or 0 for exit: ");
             pathName = readString();

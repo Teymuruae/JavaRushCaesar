@@ -3,6 +3,6 @@ package app;
 public class App {
 
     public static void main(String[] args) {
-        Interface.appStarter();
+        new Interface().appStart();
     }
 }

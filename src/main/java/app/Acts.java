@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Acts {
-    private static int alphabetLength = Constants.ALPHABET.length();
+    private int alphabetLength = Constants.ALPHABET.length();
+    private IOHelper ioHelper = new IOHelper();
 
-    private static int checkKey(int key) {
+    private int checkKey(int key) {
         int keyToReturn = key;
         if (key > alphabetLength) {
             keyToReturn = key % alphabetLength;
@@ -19,56 +20,48 @@ public class Acts {
         return keyToReturn;
     }
 
-    public static String encoder(String text, int key) {
-        int index;
-        int newIndex = 0;
+    public String encode(String text, int key) {
         key = checkKey(key);
         char[] txt = text.toCharArray();
 
-        String newText = "";
+        String encryptedText = "";
         for (int i = 0; i < txt.length; i++) {
             String value = String.valueOf(txt[i]);
             if (Constants.ALPHABET.contains(value)) {
-                index = Constants.ALPHABET.indexOf(value);
-                newIndex = index - key;
-                if (newIndex < 0) {
-                    newIndex = alphabetLength + newIndex;
-                } else if (newIndex > alphabetLength) {
-                    newIndex = newIndex - alphabetLength;
-                }
-                newText = newText + Constants.ALPHABET.charAt(newIndex);
+                int encryptedSymbol = (Constants.ALPHABET.indexOf(value) - key + alphabetLength) % alphabetLength;
+                encryptedText = encryptedText + Constants.ALPHABET.charAt(encryptedSymbol);
             } else {
-                newText = newText + value;
+                encryptedText = encryptedText + value;
             }
         }
-        return newText;
+        return encryptedText;
     }
 
-    public static String decoder(String text, int key) {
-        return encoder(text, -key);
+    public String decode(String text, int key) {
+        return encode(text, -key);
     }
 
-    public static void encodeToFile(Path from, Path to, int key) {
-        String text = IOHelper.reader(from);
+    public  void encodeToFile(Path from, Path to, int key) {
+        String text = ioHelper.read(from);
 
-        String encodedText = encoder(text, key);
-        IOHelper.writer(to, encodedText);
+        String encodedText = encode(text, key);
+        ioHelper.write(to, encodedText);
     }
 
-    public static void decodeFromFile(Path from, Path to, int key) {
-        String text = IOHelper.reader(from);
+    public  void decodeFromFile(Path from, Path to, int key) {
+        String text = ioHelper.read(from);
 
-        String decodedText = decoder(text, key);
-        IOHelper.writer(to, decodedText);
+        String decodedText = decode(text, key);
+        ioHelper.write(to, decodedText);
     }
 
-    public static void bruteForce(Path from, Path to) {
-        String text = IOHelper.reader(from);
+    public void bruteForce(Path from, Path to) {
+        String text = ioHelper.read(from);
 
         String result = "";
         String[] optionText = new String[alphabetLength];
         for (int i = 0; i < alphabetLength - 1; i++) {
-            optionText[i] = Acts.decoder(text, i);
+            optionText[i] = decode(text, i);
         }
         for (int i = 0; i < optionText.length; i++) {
             if (countIndexes(optionText[i], ". ") > 5
@@ -77,10 +70,10 @@ public class Acts {
                 break;
             }
         }
-        IOHelper.writer(to, result);
+        ioHelper.write(to, result);
     }
 
-    private static int countIndexes(String text, String symbol) {
+    private int countIndexes(String text, String symbol) {
         List<Integer> lIst = new ArrayList<>();
         int index = text.indexOf(symbol);
         while (index >= 0) {

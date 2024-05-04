@@ -1,6 +1,5 @@
 package app.helpers;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,7 +8,7 @@ import java.util.List;
 
 public class IOHelper {
 
-    public static String reader(Path path)  {
+    public String read(Path path) {
         List<String> lines = new ArrayList<>();
         try {
             lines = Files.readAllLines(path);
@@ -24,12 +23,12 @@ public class IOHelper {
         return textToReturn;
     }
 
-    public static void writer(Path path, String text) {
-        if(!Files.exists(path)){
+    public void write(Path path, String text) {
+        if (!Files.exists(path)) {
             try {
                 Files.createFile(path);
             } catch (IOException e) {
-               e.printStackTrace();
+                e.printStackTrace();
             }
         }
         try {
@@ -38,9 +37,5 @@ public class IOHelper {
             System.out.println("Something wrong. Try again " + ioException.getMessage());
             ioException.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        writer(Path.of("kuku.txt"), "kukushka");
     }
 }
