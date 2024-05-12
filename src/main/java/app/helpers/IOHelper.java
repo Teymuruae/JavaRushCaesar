@@ -1,5 +1,7 @@
 package app.helpers;
 
+import app.actions.Exit;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,5 +39,16 @@ public class IOHelper {
             System.out.println("Something wrong. Try again " + ioException.getMessage());
             ioException.printStackTrace();
         }
+    }
+
+    public String getNewPathIfNotValid(String textToPrint) {
+       String pathName =  new DialogHelper().getLine(textToPrint);
+        while (Files.notExists(Path.of(pathName))) {
+            pathName = new DialogHelper().getLine("Wrong file path. Please, enter valid path or 0 for exit: ");
+            if (pathName.equals("0")) {
+                new Exit().run();
+            }
+        }
+        return pathName;
     }
 }

@@ -4,12 +4,13 @@ import java.util.HashMap;
 
 public class ActionsFactory {
 
-    private HashMap<Integer, Action> map = new HashMap<Integer, Action>() {{
-    1, new Encryptor(),
-    2, new Decryptor(),
-    3, new Brutforce(),
-    4, new StaticAnalysis(),
-    }
+    private HashMap<Integer, Action> map = new HashMap<Integer, Action>() {
+        {
+            put(0, new Exit());
+            put(1, new Encryptor());
+            put(2, new Decryptor());
+            put(3, new BruteForce());
+        }
     };
 
     public Action getAction(int command) {
